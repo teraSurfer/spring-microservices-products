@@ -2,6 +2,7 @@ package com.shopapp.products.controller;
 
 import com.shopapp.products.model.Product;
 import com.shopapp.products.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @RepositoryRestController
 @RequestMapping("/products")
+@Slf4j
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -67,8 +69,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable("id") long id, @RequestBody Product product) {
-        Product existingProduct = productRepository.findById(id).get();
+    public ResponseEntity<?> updateProduct(@PathVariable("id") String id, @RequestBody Product product) {
+        log.info(id);
+        Product existingProduct = productRepository.findById(Long.valueOf(id)).get();
         existingProduct.setProductName(product.getProductName());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setListPrice(product.getListPrice());
