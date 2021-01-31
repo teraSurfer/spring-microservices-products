@@ -2,6 +2,7 @@ package com.shopapp.products.controller;
 
 import com.shopapp.products.model.Product;
 import com.shopapp.products.repository.ProductRepository;
+import com.shopapp.products.beans.ProductListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,6 +36,16 @@ public class ProductController {
     @GetMapping("")
     public ResponseEntity<?> getProducts() {
         Iterable<Product> products = productRepository.findAll();
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", products);
+        response.put("message", "success");
+        return ResponseEntity.ok(response);
+    }
+
+    // Order microserice will request to fetch products by list through POST
+    @PostMapping("/product-list")
+    public ResponseEntity<?> getProductList(@RequestBody ProductListVO productListVO) {
+        Iterable<Product> products = productRepository.findAllById(productListVO.getProductIds());
         Map<String, Object> response = new HashMap<>();
         response.put("products", products);
         response.put("message", "success");
